@@ -1,0 +1,48 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: api
+  profiles:
+    active: development
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:8432/<realm>
+    username: dbadm
+    password: dbpwd
+  jpa:
+    hibernate:
+      ddl-auto: none # When you launch the application for the first time - switch "none" at "create"
+      lob:
+        non_contextual_creation: true
+    show-sql: true
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    open-in-view: false
+    generate-ddl: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8437/auth/realms/<realm>
+
+logging:
+  pattern:
+    console: "%d %-5level %logger : %msg%n"
+  level:
+    org.springframework: info
+    org.hibernate: debug
+    com.incrys: trace
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web.reactive.function.client: TRACE
+
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:9091/eureka/
+#      register-with-eureka: true
+#      fetch-registry: true
+#  instance:
+#    hostname: localhost

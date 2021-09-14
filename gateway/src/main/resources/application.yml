@@ -1,0 +1,69 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: dashing-data-gateway
+  cloud:
+    gateway:
+      default-filters:
+        - TokenRelay
+      routes:
+        - id: dashing-data-api
+          uri: http://localhost:8081
+          predicates:
+            - Path=/api/**
+        - id: dashing-data-frontend
+          uri: http://localhost:4200
+          predicates:
+            - Path=/ui/**
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: dashing-data-kafka
+          uri: http://localhost:8436
+          predicates:
+            - Path=/akhq/**
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: dashing-data-adminer
+          uri: http://localhost:8431
+          predicates:
+            - Path=/adminer/**
+          filters:
+            - RemoveRequestHeader=Cookie
+        - id: dashing-data-influxdb
+          uri: http://localhost:8433
+          predicates:
+            - Path=/influx/**
+          filters:
+            - RemoveRequestHeader=Cookie
+  security:
+    oauth2:
+      client:
+        provider:
+          keycloak:
+            token-uri: http://localhost:8437/auth/realms/dashing-data/protocol/openid-connect/token
+            authorization-uri: http://localhost:8437/auth/realms/dashing-data/protocol/openid-connect/auth
+            userinfo-uri: http://localhost:8437/auth/realms/dashing-data/protocol/openid-connect/userinfo
+            user-name-attribute: preferred_username
+        registration:
+          keycloak-with-test-scope:
+            provider: keycloak
+            client-id: dashing-data-gateway
+            client-secret: 29a952d6-1a79-410c-9128-48626c96abf1
+            authorization-grant-type: authorization_code
+            redirect-uri: "{baseUrl}/login/oauth2/code/keycloak"
+
+logging.level:
+  org.springframework.cloud.gateway: DEBUG
+  org.springframework.security: DEBUG
+  org.springframework.web.reactive.function.client: TRACE
+
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:9091/eureka/
+      register-with-eureka: true
+      fetch-registry: true
+  instance:
+    hostname: localhost

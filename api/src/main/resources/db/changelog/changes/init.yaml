@@ -1,0 +1,17 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Mihai Vlasceanu
+      changes:
+        - createTable:
+            tableName: test
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+        - dropTable:
+            tableName: test

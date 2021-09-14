@@ -1,0 +1,14 @@
+server:
+  port: 9091
+spring:
+  application:
+    name: dashing-data-eureka
+
+eureka:
+    client:
+      serviceUrl:
+          defaultZone: http://localhost:9091/eureka/
+      register-with-eureka: false
+      fetch-registry: false
+    instance:
+      hostname: localhost
